@@ -1,6 +1,6 @@
 {
   "name": "express-run",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "My Personal ExpressJS starter Kit",
   "bin": {
     "express-run": "dist/index.cjs"
@@ -20,7 +20,10 @@
   "files": [
     "dist"
   ],
-  "keywords": [],
+  "keywords": [
+    "express",
+    "express starter"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
