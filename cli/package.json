@@ -1,0 +1,33 @@
+{
+  "name": "express-run",
+  "version": "1.0.4",
+  "description": "My Personal ExpressJS starter Kit",
+  "bin": {
+    "express-run": "dist/index.cjs"
+  },
+  "scripts": {
+    "build": "tsup && cp README.md ../",
+    "start": "node dist/index.cjs",
+    "clean": "rm -rf dist",
+    "publish": "npm run clean && npm run build && npm publish"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    }
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.13.13",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
+  }
+}
