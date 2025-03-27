@@ -1,36 +1,24 @@
-export const success = (status: number, message: string, data?: unknown) => {
-  let resObj: {
-    status: number;
-    success: boolean;
-    message: string;
-    data?: any;
-  } = {
-    status,
-    success: true,
-    message,
-  };
-  data ? (resObj.data = data) : null;
-  return resObj;
-};
+import { FailedResponse, SuccessResponse } from "@/types";
 
-export const failed = (status: number, message: string, stack?: unknown) => {
-  const resObj: {
-    status: number;
-    success: boolean;
-    message: string;
-    stack?: any;
-  } = {
-    status,
-    success: false,
-    message,
-  };
+export const success: SuccessResponse = (status, message, data, meta) => ({
+  status,
+  success: true,
+  message,
+  meta,
+  data,
+});
 
-  stack instanceof Error
-    ? (resObj.stack = stack
-        .toString()
-        .split("\n")
-        .map((line) => line.replace(/[\s] /gi, "")))
-    : null;
-
-  return resObj;
-};
+export const failed: FailedResponse = (status, message, stack) => ({
+  status,
+  success: false,
+  message,
+  stack:
+    stack instanceof Error
+      ? stack
+          .toString()
+          .split("\n")
+          .map((line) => line.replace(/[\s] /gi, ""))
+      : stack
+      ? [stack.toString()]
+      : undefined,
+});
