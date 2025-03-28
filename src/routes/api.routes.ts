@@ -1,6 +1,5 @@
 import { Router } from "express";
 import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
 import generalRoutes from "./route_groups/general.routes";
 import roleBasedRoutes from "./route_groups/role_based.routes";
 import { atuhorized } from "@/middleware/auth/authorized";
@@ -12,7 +11,6 @@ const api_routes = Router();
 
 api_routes.use(bodyParser.urlencoded({ extended: true }));
 api_routes.use(bodyParser.json());
-api_routes.use(cookieParser());
 
 // General Routes
 api_routes.use("/auth", generalRoutes.Auth);
