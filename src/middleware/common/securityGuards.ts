@@ -1,13 +1,17 @@
-import { Application } from "express";
+import express, { Application } from "express";
 import cors from "cors";
 import xssClean from "xss-clean";
 import helmet from "helmet";
 import hpp from "hpp";
 import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
 import { SecurityGuardsConfig } from "@/types";
 import { WHITE_LIST_ORIGIN } from "@/shared";
+import { failed } from "@/utils";
+import cookieParser from "cookie-parser";
 /*.................XXX........................*/
 
+// Configure the security settings as needed
 const config: SecurityGuardsConfig = {
   cors: {
     credentials: true,
@@ -53,19 +57,34 @@ const config: SecurityGuardsConfig = {
     standardHeaders: true,
     legacyHeaders: false,
     skip: (req) => req.method === "OPTIONS",
-    handler: (_, res) => {
+    handler: (_, res) =>
       res
         .status(429)
-        .json({ message: "Too many requests. Please try again later." });
-    },
+        .json(failed(429, "Too many requests. Please try again later.")),
+  },
+  mongoSanitize: {
+    replaceWith: "_",
+    allowDots: false,
   },
 };
 
-export const securityGuards = (app: Application): Application => {
-  app.use(cors(config.cors));
-  app.use(xssClean());
-  app.use(helmet(config.helmet));
-  app.use(hpp(config.hpp));
-  app.use(rateLimit(config.rateLimit));
-  return app;
-};
+export const securityGuards = ((
+  expressModule: typeof express
+): { app: Application; appForWebHook: Application } => {
+  let secureApp = expressModule(),
+    appForWebHook = expressModule();
+
+  // Apply security middlewares for secureApp
+  secureApp.use(cookieParser());
+  secureApp.use(cors(config.cors));
+  secureApp.use(xssClean());
+  secureApp.use(helmet(config.helmet));
+  secureApp.use(hpp(config.hpp));
+  secureApp.use(rateLimit(config.rateLimit));
+  secureApp.use(mongoSanitize(config.mongoSanitize));
+
+  // Apply CORS middleware for web hook app
+  appForWebHook.use(cors(config.cors));
+
+  return { app: secureApp, appForWebHook };
+})(express);
