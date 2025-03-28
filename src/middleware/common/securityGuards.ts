@@ -15,7 +15,10 @@ const config: SecurityGuardsConfig = {
       origin: string | undefined,
       callback: (err: Error | null, allowed?: boolean) => void
     ) => {
-      if (WHITE_LIST_ORIGIN.indexOf(origin ?? "") !== -1 || !origin) {
+      if (
+        WHITE_LIST_ORIGIN.split(",").indexOf(origin ?? "") !== -1 ||
+        !origin
+      ) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
