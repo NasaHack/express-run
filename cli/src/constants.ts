@@ -1,1 +1,2 @@
-export const ES_STARTER_SRC: string = "https://github.com/NasaHack/express-run";
+export const RUN_EXPRESS_SRC: string =
+  "https://github.com/NasaHack/express-run";
