@@ -6,8 +6,6 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 interface JwtConfig {
   refresh_token_expires: number;
   access_token_expires: number;
-  refresh_token_jwt_expres: string;
-  access_token_jwt_expres: string;
   refresh_token_key: string;
   access_token_key: string;
   at_prefix: string;
@@ -15,12 +13,17 @@ interface JwtConfig {
 
 class JWTServices {
   private cookieOptions: CookieOptions;
+  private refresh_token_jwt_expres?: number;
+  private access_token_jwt_expres?: number;
+
   constructor(private config: JwtConfig) {
     this.cookieOptions = {
       sameSite: "none",
       secure: true,
       httpOnly: true,
     };
+    this.refresh_token_jwt_expres = this.config.refresh_token_expires;
+    this.access_token_jwt_expres = this.config.access_token_expires;
   }
 
   private _send_access_token = (res: Response, userId: userId) => {
@@ -28,7 +31,7 @@ class JWTServices {
       { userId },
       JWT_SECRET.ACCESS_KEY,
       {
-        expiresIn: this.config.access_token_jwt_expres,
+        expiresIn: this.access_token_jwt_expres,
       }
     )}`;
 
@@ -40,7 +43,7 @@ class JWTServices {
 
   private _send_refresh_token = (res: Response, userId: userId) => {
     const token = jwt.sign({ userId }, JWT_SECRET.REFRESH_KEY, {
-      expiresIn: this.config.refresh_token_jwt_expres,
+      expiresIn: this.refresh_token_jwt_expres,
     });
 
     res.cookie(this.config.refresh_token_key, token, {
@@ -117,8 +120,6 @@ class JWTServices {
 const jwt_services = new JWTServices({
   access_token_expires: 1000 * 60 * 5,
   refresh_token_expires: 1000 * 60 * 60 * 24 * 15,
-  refresh_token_jwt_expres: "15d",
-  access_token_jwt_expres: "5m",
   access_token_key: "access_token",
   refresh_token_key: "refresh_token",
   at_prefix: "Bearer",
