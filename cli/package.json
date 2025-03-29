@@ -1,6 +1,6 @@
 {
   "name": "run-express",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "My Personal ExpressJS starter Kit",
   "bin": {
     "express-run": "dist/index.cjs"
@@ -9,7 +9,7 @@
     "build": "tsup && cp README.md ../",
     "start": "node dist/index.cjs",
     "clean": "rm -rf dist",
-    "publish": "npm run clean && npm run build && npm publish"
+    "package:publish": "npm run clean && npm run build && npm publish"
   },
   "type": "module",
   "files": [
