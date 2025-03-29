@@ -1,6 +1,6 @@
 {
-  "name": "express-run",
-  "version": "1.0.5",
+  "name": "run-express",
+  "version": "1.0.0",
   "description": "My Personal ExpressJS starter Kit",
   "bin": {
     "express-run": "dist/index.cjs"
@@ -11,26 +11,26 @@
     "clean": "rm -rf dist",
     "publish": "npm run clean && npm run build && npm publish"
   },
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs"
-    }
-  },
   "type": "module",
   "files": [
     "dist"
   ],
   "keywords": [
     "express",
-    "express starter"
+    "express starter",
+    "proah"
   ],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NasaHack/run-express.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NasaHack/run-express/issues"
+  },
+  "homepage": "https://github.com/NasaHack/run-express#readme",
   "devDependencies": {
-    "@types/node": "^22.13.13",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
-    "@typescript-eslint/parser": "^8.28.0",
-    "tsup": "^8.4.0",
-    "typescript": "^5.8.2"
+    "tsup": "^8.4.0"
   }
 }
