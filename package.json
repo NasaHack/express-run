@@ -1,5 +1,5 @@
 {
-  "name": "ex-starter",
+  "name": "run-express-src",
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
