@@ -2,12 +2,11 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["src/index.ts"],
-  format: ["esm", "cjs"],
+  format: ["cjs"],
   outDir: "dist",
   splitting: false,
-  sourcemap: true,
   clean: true,
-  minify: false,
+  minify: true,
   dts: false,
   banner: {
     js: "#!/usr/bin/env node",
