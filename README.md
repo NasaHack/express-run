@@ -13,10 +13,43 @@ npx run-express
   - Install dependencies.
   - Open the project in **VS Code** (if installed) or in the default file manager.
 
-Example Output:
+## Example Output
+
+**POSSIABLE SUCCESS :**
 
 ```bash
-🔍 Enter project name: my-new-project
-🎉 Project 'my-new-project' cloned successfully! 🚀
-🎉 Project opened successfully. 🚀
+✒️ [INPUT] : Enter project name: my-new-project
+✅ [SUCCESS] : Project cloned successfully!
+✅ [SUCCESS] : Package name updated to my-new-project
+✅ [SUCCESS] : Project sanitized and installed dependencies successfully!
+✅ [SUCCESS] : Project opened successfully!!
+```
+
+**POSSIABLE `PARTIAL` FAILURE:**
+
+```bash
+✒️ [INPUT] : Enter project name: my-new-project
+    ...
+    ...
+    ...
+⚠️ [WARNING] : Faild to opened project! Try to open project manually!
+ℹ️ [INFO]    : Try these commands to open project:
+
+⚡️ cd my-new-project
+🔧 npm install
+💻 open .
+```
+
+**POSSIABLE FAILURE:**
+
+```bash
+✒️ [INPUT] : Enter project name: .
+❌ [ERROR] : Current diretory is not empty! Please consider using a unique name for your project.
+```
+
+**POSSIABLE FAILURE:**
+
+```bash
+✒️ [INPUT] : Enter project name: new-project
+❌ [ERROR] : Already a folder exist with the same name! Please consider using a unique name for your project.
 ```
