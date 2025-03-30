@@ -27,7 +27,7 @@ npx run-express
 
 **POSSIABLE `PARTIAL` FAILURE:**
 
-```bash
+```txt
 ✒️ [INPUT] : Enter project name: my-new-project
     ...
     ...
@@ -42,14 +42,14 @@ npx run-express
 
 **POSSIABLE FAILURE:**
 
-```bash
+```txt
 ✒️ [INPUT] : Enter project name: .
 ❌ [ERROR] : Current diretory is not empty! Please consider using a unique name for your project.
 ```
 
 **POSSIABLE FAILURE:**
 
-```bash
+```txt
 ✒️ [INPUT] : Enter project name: new-project
 ❌ [ERROR] : Already a folder exist with the same name! Please consider using a unique name for your project.
 ```
