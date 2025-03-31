@@ -15,7 +15,7 @@ npx run-express
 
 ## Example Output
 
-**POSSIABLE SUCCESS :**
+**POSSIBLE SUCCESS :**
 
 ```bash
 ✒️ [INPUT] : Enter project name: my-new-project
@@ -25,7 +25,7 @@ npx run-express
 ✅ [SUCCESS] : Project opened successfully!!
 ```
 
-**POSSIABLE `PARTIAL` FAILURE:**
+**POSSIBLE `PARTIAL` FAILURE:**
 
 ```txt
 ✒️ [INPUT] : Enter project name: my-new-project
@@ -40,14 +40,14 @@ npx run-express
 💻 open .
 ```
 
-**POSSIABLE FAILURE:**
+**POSSIBLE FAILURE:**
 
 ```txt
 ✒️ [INPUT] : Enter project name: .
 ❌ [ERROR] : Current diretory is not empty! Please consider using a unique name for your project.
 ```
 
-**POSSIABLE FAILURE:**
+**POSSIBLE FAILURE:**
 
 ```txt
 ✒️ [INPUT] : Enter project name: new-project
