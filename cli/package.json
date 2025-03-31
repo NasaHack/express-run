@@ -1,17 +1,16 @@
 {
   "name": "run-express",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "My Personal ExpressJS starter Kit",
   "bin": {
-    "express-run": "dist/index.cjs"
+    "express-run": "dist/index.js"
   },
   "scripts": {
     "build": "tsup && cp README.md ../",
-    "start": "node dist/index.cjs",
+    "start": "node dist/index.js",
     "clean": "rm -rf dist",
     "package:publish": "npm run clean && npm run build && npm publish"
   },
-  "type": "module",
   "files": [
     "dist"
   ],
@@ -32,6 +31,7 @@
   "homepage": "https://github.com/NasaHack/run-express#readme",
   "devDependencies": {
     "colors": "^1.4.0",
+    "ora": "^8.2.0",
     "tsup": "^8.4.0"
   }
 }

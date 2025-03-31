@@ -40,7 +40,7 @@ const openProject = async (projectName: string) => {
     });
 
     if (oppened) {
-      return logger.success("Project opened successfully!");
+      logger.success("Project opened successfully!");
     } else {
       logger.warning("Faild to opened project! Try to open project manually!");
     }
