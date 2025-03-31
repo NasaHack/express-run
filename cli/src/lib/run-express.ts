@@ -7,17 +7,19 @@ import {
   getInput,
   isSameFolderExist,
   updatePackageName,
-  Logger,
+  logger,
   pathResolver,
   shellType,
 } from "./utils";
 
-const openProject = (projectName: string) => {
+const openProject = async (projectName: string) => {
   let hasCode: boolean = false;
   let commands: string = "";
 
+  logger.start("Opening project...");
+
   try {
-    hasCode = commander("code -v");
+    hasCode = await commander("code -v", { suppressWarning: true });
 
     switch (shellType) {
       case "powershell":
@@ -33,23 +35,29 @@ const openProject = (projectName: string) => {
         commands = "";
     }
 
-    let oppened = commander(commands);
+    let oppened = await commander(`cd ${projectName} && ${commands}`, {
+      suppressWarning: true,
+    });
 
     if (oppened) {
-      return Logger.success("Project opened successfully!");
+      return logger.success("Project opened successfully!");
     } else {
-      Logger.warning("Faild to opened project! Try to open project manually!");
+      logger.warning("Faild to opened project! Try to open project manually!");
     }
   } catch (error) {
-    Logger.warning("Faild to opened project! Try to open project manually!");
+    logger.warning("Faild to opened project! Try to open project manually!");
   }
 
-  Logger.info(
-    `Try these commands to open project:\n\n⚡️ cd ${projectName}\n🔧 npm install\n💻 ${commands}\n`
+  logger.info(
+    `Try these commands to open project:\n\n⚡️  ${colors.bold(
+      `cd ${projectName}`
+    )}\n🔧  ${colors.bold(`npm install`)}\n💻  ${colors.bold(commands)}\n`
   );
+  logger.appriciation();
 };
 
-const sanitizeProject = (projectName: string) => {
+const sanitizeProject = async (projectName: string) => {
+  logger.start("Sanitizing and install dependencies for project...");
   try {
     let commands: string = "";
 
@@ -65,27 +73,38 @@ const sanitizeProject = (projectName: string) => {
         break;
       default: {
         commands = "";
-        Logger.warning(
+        logger.warning(
           "Unsupported shell type! Consider to open project manually! and run npm install commands to install necessary dependencies."
         );
       }
     }
 
-    Logger.success(
-      "Project sanitized and installed dependencies successfully!"
-    );
-    commands && commander(commands) && openProject(projectName);
+    let sanitized = await commander(commands, { suppressWarning: true });
+
+    if (sanitized) {
+      logger.success(
+        "Project sanitized successfully! and install dependencies."
+      );
+      openProject(projectName);
+    } else {
+      logger.warning(
+        "Faild to sanitize project! Try to sanitize project manually!"
+      );
+    }
   } catch (error) {
-    Logger.warning("Project sanitization failed!");
+    logger.warning("Project sanitization failed!");
   }
 };
 
-const cloneRunExprss = (projectName: string) => {
-  let cloned = commander(`git clone ${RUN_EXPRESS_SRC} ${projectName}`);
+const cloneRunExprss = async (projectName: string) => {
+  logger.start("Cloning project...");
+  let cloned = await commander(`git clone ${RUN_EXPRESS_SRC} ${projectName}`, {
+    suppressWarning: true,
+  });
   if (cloned) {
-    Logger.success("Project cloned successfully!");
+    logger.success("Project cloned successfully!");
     updatePackageName(pathResolver(projectName, "package.json"));
-    Logger.success(
+    logger.success(
       `Package name updated to ${colors.bold(projectName).underline}`
     );
   }
@@ -93,13 +112,14 @@ const cloneRunExprss = (projectName: string) => {
 };
 
 const initialize = (projectName: string) => {
+  logger.start("Initializing project...");
   if (projectName === "." && hasExistAnyFile())
-    return Logger.error(
+    return logger.error(
       "Current diretory is not empty! Please consider using a unique name for your project."
     );
 
   if (isSameFolderExist(projectName))
-    return Logger.error(
+    return logger.error(
       "Already a folder exist with the same name! Please consider using a unique name for your project."
     );
 

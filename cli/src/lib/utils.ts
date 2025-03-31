@@ -1,28 +1,66 @@
 import colors from "colors";
-import { log as Print } from "console";
-import { execSync } from "child_process";
+import { exec, execSync } from "child_process";
 import readline from "readline";
 import os from "os";
 import fs from "fs";
 import path from "path";
+import ora, { Ora } from "ora";
+import { FINAL_MESSAGE } from "../constants";
 
-export class Logger {
-  static info(message: string): void {
-    Print(`ℹ️  ${colors.blue("[INFO]")}    : ${message}`);
+export const Root: string = process.cwd();
+
+class Logger {
+  private spinner: Ora;
+  protected hyperLink: string;
+
+  constructor() {
+    this.spinner = ora({
+      spinner: "dots",
+      color: "yellow",
+    });
   }
 
-  static success(message: string): void {
-    Print(`✅ ${colors.green("[SUCCESS]")} : ${message}`);
-  }
+  start = (message: string) => {
+    this.spinner.start(`  ${colors.bold("[LOADING]").red} : ${message}`);
+  };
 
-  static warning(message: string): void {
-    Print(`⚠️  ${colors.yellow("[WARNING]")} : ${message}`);
-  }
+  info = (message: string) => {
+    this.spinner.stopAndPersist({
+      symbol: "",
+      text: `ℹ️   ${colors.blue("[INFO]")}    : ${message}`,
+    });
+  };
 
-  static error(message: string): void {
-    Print(`❌ ${colors.red("[ERROR]")} : ${message}`);
-  }
+  success = (message: string) => {
+    this.spinner.stopAndPersist({
+      symbol: "",
+      text: `✅  ${colors.green("[SUCCESS]")} : ${message}`,
+    });
+  };
+
+  warning = (message: string) => {
+    this.spinner.stopAndPersist({
+      symbol: "",
+      text: `⚠️   ${colors.yellow("[WARNING]")} : ${message}`,
+    });
+  };
+
+  error = (message: string) => {
+    this.spinner.stopAndPersist({
+      symbol: "",
+      text: ` ❌   ${colors.red("[ERROR]")}    : ${message}`,
+    });
+  };
+
+  appriciation = () => {
+    this.spinner.stopAndPersist({
+      symbol: "",
+      text: Buffer.from(FINAL_MESSAGE, "base64").toString("utf-8"),
+    });
+  };
 }
+
+export const logger = new Logger();
 
 type TC_Wrapper = <T extends any[], R>(
   handler: (...args: T) => any
@@ -34,25 +72,34 @@ export const tcWrapper: TC_Wrapper = (handler) => {
       const returnValue = handler(...args);
       return returnValue;
     } catch (error) {
-      Logger.error(error instanceof Error ? error.message : "unknown error");
+      logger.error(error instanceof Error ? error.message : "unknown error");
       return false;
     }
   };
 };
 
-export const Root: string = process.cwd();
-
 export const pathResolver = tcWrapper<string[], string>((...paths) => {
   return path.join(Root, ...paths);
 });
 
-export const commander = (commands: string) => {
-  try {
-    execSync(commands, { stdio: "inherit" });
-    return true;
-  } catch (_) {
-    return false;
-  }
+type Commander = (
+  commands: string,
+  options?: { suppressWarning?: boolean }
+) => Promise<boolean>;
+
+export const commander: Commander = (
+  command: string,
+  options = { suppressWarning: false }
+) => {
+  return new Promise((resolve) => {
+    exec(command, { encoding: "utf-8" }, (error, stdout, stderr) => {
+      if (error) {
+        if (!options.suppressWarning) console.error(stderr);
+        return resolve(false);
+      }
+      resolve(true);
+    });
+  });
 };
 
 export const getInput = tcWrapper<[string, (answer: string) => void], void>(
@@ -62,7 +109,7 @@ export const getInput = tcWrapper<[string, (answer: string) => void], void>(
       output: process.stdout,
     });
 
-    rl.question(`✒️  ${colors.blue("[INPUT]")} : ${question}`, (answer) => {
+    rl.question(`✒️   ${colors.blue("[INPUT]")}   : ${question}`, (answer) => {
       callback(answer);
       rl.close();
     });
