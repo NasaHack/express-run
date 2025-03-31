@@ -40,20 +40,20 @@ const openProject = async (projectName: string) => {
     });
 
     if (oppened) {
-      logger.success("Project opened successfully!");
+      logger.success("Project open successfully!");
     } else {
-      logger.warning("Faild to opened project! Try to open project manually!");
+      throw new Error("");
     }
   } catch (error) {
-    logger.warning("Faild to opened project! Try to open project manually!");
+    logger.warning("Failed to open the project! Try to open project manually!");
+    logger.info(
+      `Follow these commands to open project :\n\n⚡️  ${colors.bold(
+        `cd ${projectName}`
+      )}\n🔧  ${colors.bold(`npm install`)}\n💻  ${colors.bold(commands)}\n`
+    );
+  } finally {
+    logger.appriciation();
   }
-
-  logger.info(
-    `Try these commands to open project:\n\n⚡️  ${colors.bold(
-      `cd ${projectName}`
-    )}\n🔧  ${colors.bold(`npm install`)}\n💻  ${colors.bold(commands)}\n`
-  );
-  logger.appriciation();
 };
 
 const sanitizeProject = async (projectName: string) => {
@@ -88,7 +88,7 @@ const sanitizeProject = async (projectName: string) => {
       openProject(projectName);
     } else {
       logger.warning(
-        "Faild to sanitize project! Try to sanitize project manually!"
+        "Failed to sanitize project! Try to sanitize project manually!"
       );
     }
   } catch (error) {
@@ -118,7 +118,7 @@ const initialize = (projectName: string) => {
       "Current diretory is not empty! Please consider using a unique name for your project."
     );
 
-  if (isSameFolderExist(projectName))
+  if (projectName !== "." && isSameFolderExist(projectName))
     return logger.error(
       "Already a folder exist with the same name! Please consider using a unique name for your project."
     );

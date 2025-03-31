@@ -5,7 +5,7 @@ import os from "os";
 import fs from "fs";
 import path from "path";
 import ora, { Ora } from "ora";
-import { FINAL_MESSAGE } from "../constants";
+import { RUN_EXPRESS_SRC } from "../constants";
 
 export const Root: string = process.cwd();
 
@@ -48,14 +48,18 @@ class Logger {
   error = (message: string) => {
     this.spinner.stopAndPersist({
       symbol: "",
-      text: ` ❌   ${colors.red("[ERROR]")}    : ${message}`,
+      text: `❌  ${colors.red("[ERROR]")}   : ${message}`,
     });
   };
 
   appriciation = () => {
     this.spinner.stopAndPersist({
       symbol: "",
-      text: Buffer.from(FINAL_MESSAGE, "base64").toString("utf-8"),
+      text: `\n🎉 Dear friends! 🎉\nIf you found this helpful, a ⭐ STAR ⭐ would be ${colors.bold(
+        "GREATLY APPRECIATED"
+      )}! 🥰 \n━━\x1b]8;;${RUN_EXPRESS_SRC}\x07🚀 ${colors.bold(
+        "STAR ON GITHUB"
+      )} 🚀\x1b]8;;\x07━━\n`,
     });
   };
 }
