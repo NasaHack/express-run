@@ -1,6 +1,6 @@
 import mongoSanitize from "express-mongo-sanitize";
 import bodyParser from "body-parser";
-import { IRouter, Router } from "express";
+import { IRouter, RequestHandler, Router } from "express";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -67,7 +67,9 @@ const config: IIronWallConfig = {
   },
 };
 
-export const ironWall = (router: IRouter): IRouter =>
+export const ironWall = (
+  child: IRouter | RequestHandler
+): IRouter | RequestHandler =>
   Router()
     .use(cors(config.cors))
     .use(cookieParser())
@@ -77,4 +79,4 @@ export const ironWall = (router: IRouter): IRouter =>
     .use(helmet(config.helmet))
     .use(hpp(config.hpp))
     .use(mongoSanitize(config.mongoSanitize))
-    .use(router);
+    .use(child);
