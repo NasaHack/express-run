@@ -7,6 +7,7 @@ import { serverDownResponse } from "@/segments/common";
 export class RunExpressServer {
   protected config: Config;
   protected server: Server;
+  protected isServerShuttingDown = false;
 
   constructor() {
     this.config = config;
@@ -14,7 +15,7 @@ export class RunExpressServer {
   }
 
   start = async () => {
-    log.info(`Server has been started in '${config.appMode}' mode!`);
+    log.info(`Server has been started in '${this.config.appMode}' mode!`);
     try {
       const connect = await connectMongoDB();
 
@@ -25,8 +26,8 @@ export class RunExpressServer {
         log.error("Database Connection Failed!");
       }
 
-      this.server.listen(config.port, () => {
-        log.info(`Server Listening: http://localhost:${config.port}`);
+      this.server.listen(this.config.port, () => {
+        log.info(`Server Listening: http://localhost:${this.config.port}`);
       });
     } catch (error) {
       log.error(`Failed to start the Server`, error instanceof Error && error);
@@ -35,6 +36,13 @@ export class RunExpressServer {
   };
 
   shutdown = async () => {
+    if (this.isServerShuttingDown) {
+      log.warn("Server is already shutting down...");
+      return;
+    }
+
+    this.isServerShuttingDown = true;
+
     const forceExit = setTimeout(() => {
       log.warn("Forcefully shutting down due to timeout...");
       process.exit(1);
@@ -43,16 +51,22 @@ export class RunExpressServer {
     try {
       log.info("Shutting down server...");
 
-      if (this.server.listening) {
-        this.server.close((err) => {
-          if (err) {
-            log.error("Error closing server:", err);
-            process.exit(1);
-          } else {
-            log.info("Server has been closed");
-          }
-        });
-      }
+      await new Promise<void>((resolve, reject) => {
+        if (this.server.listening) {
+          this.server.close((err) => {
+            if (err) {
+              log.error("Error closing server:", err);
+              reject(err);
+              process.exit(1);
+            } else {
+              log.info("Server has been closed");
+              resolve();
+            }
+          });
+        } else {
+          resolve();
+        }
+      });
 
       await mongoose.connection.close(false);
       log.info("Database disconnected");
