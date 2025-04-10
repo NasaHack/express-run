@@ -9,7 +9,7 @@ const app: Application = express();
 const appBootstrap = () => {
   app.set("json spaces", 2);
   app.use(static_(join(process.cwd(), "public")));
-  app.get("/", rootResponse);
+  app.get("/", ironWall(rootResponse));
   app.use("/api", ironWall(api_routes));
   app.use("/web-hook", webHookWall(wh_routes));
   app.use(notFound);
